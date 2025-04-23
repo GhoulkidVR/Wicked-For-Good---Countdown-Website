@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicked, For Good - Countdown</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap');
+        
+        :root {
+            --emerald: #3a7d44;
+            --gold: #ffd700;
+            --purple: #6a0dad;
+            --black: #1a1a1a;
+            --white: #f0f0f0;
+            --gray: #2a2a2a;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        header {
+            margin-bottom: 3rem;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            margin: 0;
+            background: linear-gradient(to right, var(--gold), var(--emerald));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(58, 125, 68, 0.3);
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 2rem;
+            margin-top: 0.5rem;
+        }
+        
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .countdown-box {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid var(--emerald);
+            border-radius: 10px;
+            padding: 1.5rem;
+            min-width: 120px;
+            box-shadow: 0 0 20px rgba(58, 125, 68, 0.5);
+            transition: transform 0.3s ease;
+        }
+        
+        .countdown-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(58, 125, 68, 0.8);
+        }
+        
+        .countdown-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .countdown-label {
+            font-size: 1.2rem;
+            color: var(--white);
+            margin: 0.5rem 0 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .quote-container {
+            margin: 4rem auto;
+            max-width: 800px;
+            padding: 2rem;
+            border-left: 4px solid var(--emerald);
+            background: rgba(26, 26, 26, 0.6);
+            position: relative;
+        }
+        
+        .quote {
+            font-style: italic;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: var(--white);
+            margin: 0;
+        }
+        
+        .quote::before,
+        .quote::after {
+            content: '"';
+            color: var(--gold);
+            font-size: 2rem;
+        }
+        
+        .character {
+            font-weight: 600;
+            color: var(--gold);
+            margin-top: 1rem;
+            display: block;
+            font-style: normal;
+        }
+        
+        .bubble {
+            position: absolute;
+            background: var(--purple);
+            border-radius: 50%;
+            opacity: 0.2;
+            z-index: -1;
+        }
+        
+        .bubble-1 {
+            width: 200px;
+            height: 200px;
+            top: -50px;
+            left: -50px;
+        }
+        
+        .bubble-2 {
+            width: 150px;
+            height: 150px;
+            bottom: -30px;
+            right: -30px;
+        }
+        
+        .info-section {
+            margin: 5rem 0;
+            text-align: left;
+            background: rgba(26, 26, 26, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            border-top: 3px solid var(--purple);
+            border-bottom: 3px solid var(--emerald);
+        }
+        
+        .info-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 2rem;
+            margin-top: 0;
+        }
+        
+        .info-section p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .quote-container p {
+            font-size: 1.3rem;
+        }
+        
+        .quote-container a {
+            color: var(--gold);
+            text-decoration: underline;
+        }
+        
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid var(--emerald);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        footer a {
+            color: var(--emerald);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .countdown-box {
+                min-width: 80px;
+                padding: 1rem;
+            }
+            
+            .countdown-value {
+                font-size: 2rem;
+            }
+            
+            .countdown-label {
+                font-size: 0.8rem;
+            }
+            
+            .quote {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Wicked, For Good</h1>
+            <h2>The Countdown Begins</h2>
+        </header>
+        
+        <div class="countdown-container">
+            <div class="countdown-box">
+                <div class="countdown-value" id="days">00</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="hours">00</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="minutes">00</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="seconds">00</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="quote-container">
+            <div class="bubble bubble-1"></div>
+            <div class="bubble bubble-2"></div>
+            <p class="quote">Are people born wicked? Or do they have wickedness thrust upon them?</p>
+            <span class="character">— Elphaba, Wicked</span>
+        </div>
+        
+        <div class="info-section">
+            <h3>About Wicked, For Good</h3>
+            <p>Mark your calendars for November 21, 2025, when "Wicked, For Good" will be released at midnight (local time). This highly anticipated new chapter in the Wicked saga promises to delve deeper into the complex relationship between Elphaba and Glinda, exploring themes of friendship, prejudice, and the nature of good and evil.</p>
+            <p>The original musical "Wicked" reimagined the Land of Oz, telling the story of two young women - one born with emerald-green skin who is smart, fiery and misunderstood, the other blonde, ambitious and exceptionally popular. How these two unlikely friends end up as the Wicked Witch of the West and Glinda the Good Witch makes for the most complete and satisfying musical in decades.</p>
+            <p>For more information about the release, visit <a href="https://wickedthemusical.com" target="_blank">Wicked's official website</a>.</p>
+        </div>
+        
+        <footer>
+            <p>Countdown to "Wicked, For Good" release on November 21, 2025 at 12:00 AM (Local Time)</p>
+            <p>This is an unofficial fan site. Wicked and all related elements are trademarks of their respective owners.</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Set the date we're counting down to
+        const releaseDate = new Date("November 21, 2025 00:00:00").getTime();
+        
+        // Update the countdown every 1 second
+        const countdown = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = releaseDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerHTML = Math.floor(hours).toString().padStart(2, '0');
+            document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+            
+            if (distance < 0) {
+                clearInterval(countdown);
+                document.getElementById("countdown").innerHTML = "Wicked, For Good is now released!";
+            }
+        }, 1000);
+        
+        // Create floating bubbles for decoration
+        function createBubbles() {
+            const colors = ['#3a7d44', '#6a0dad', '#ffd700', '#ffffff'];
+            const container = document.querySelector('.container');
+            
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                const size = Math.random() * 50 + 20;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const opacity = Math.random() * 0.3 + 0.1;
+                const animationDuration = Math.random() * 20 + 10;
+                const delay = Math.random() * 10;
+                
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${posX}%`;
+                bubble.style.top = `${posY}%`;
+                bubble.style.background = color;
+                bubble.style.opacity = opacity;
+                bubble.style.animation = `float ${animationDuration}s ease-in-out ${delay}s infinite`;
+                
+                container.appendChild(bubble);
+            }
+        }
+        
+        // Add animation for bubbles
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            50% {
+                transform: translateY(-100px) translateX(50px);
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+            }
+        }`;
+        document.head.appendChild(style);
+        
+        window.onload = createBubbles;
+    </script>
+</body>
+</html>
