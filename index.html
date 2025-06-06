@@ -3,289 +3,724 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wicked, For Good - Countdown</title>
+    <title>WICKED FOR GOOD: The Ultimate Countdown</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:wght@700;900&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap');
-        
         :root {
             --emerald: #3a7d44;
             --gold: #ffd700;
             --purple: #6a0dad;
-            --black: #1a1a1a;
+            --pink: #ff69b4;
+            --black: #0a0a0a;
             --white: #f0f0f0;
-            --gray: #2a2a2a;
+            --shadow-green: 0 0 25px rgba(58, 125, 68, 0.8);
+            --shadow-gold: 0 0 25px rgba(255, 215, 0, 0.8);
         }
-        
+
+        /* RESET & BASE STYLES */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            margin: 0;
-            padding: 0;
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--black);
+            background: var(--black);
             color: var(--white);
-            background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
             overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%233a7d44" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>'), auto;
         }
-        
-        body::before {
-            content: '';
+
+        /* CUSTOM CURSOR EFFECT */
+        .cursor-trail {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(58, 125, 68, 0.3);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+        }
+
+        /* FULLSCREEN VIDEO BACKGROUND */
+        .video-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.4;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.8), rgba(58, 125, 68, 0.2));
             z-index: -1;
         }
-        
+
+        /* DYNAMIC TIME-BASED BACKGROUND */
+        .time-of-day {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                var(--sky-top) 0%, 
+                var(--sky-middle) 50%, 
+                var(--sky-bottom) 100%);
+            z-index: -3;
+            opacity: 0.3;
+        }
+
+        /* MAIN CONTAINER */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+            position: relative;
+        }
+
+        /* HEADER WITH 3D TEXT */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            padding: 2rem;
+            position: relative;
         }
-        
-        header {
-            margin-bottom: 3rem;
-        }
-        
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            margin: 0;
-            background: linear-gradient(to right, var(--gold), var(--emerald));
+
+        .title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 6rem;
+            background: linear-gradient(45deg, var(--gold), var(--emerald), var(--purple));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 10px rgba(58, 125, 68, 0.3);
+            text-shadow: 0 0 20px rgba(58, 125, 68, 0.5);
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
+            transform-style: preserve-3d;
+            animation: floatTitle 6s ease-in-out infinite;
         }
-        
-        h2 {
-            font-family: 'Playfair Display', serif;
+
+        @keyframes floatTitle {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-20px) rotateX(5deg); }
+        }
+
+        .subtitle {
+            font-size: 1.8rem;
             color: var(--gold);
-            font-size: 2rem;
-            margin-top: 0.5rem;
+            margin-bottom: 3rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
-        
-        .countdown-container {
+
+        /* COUNTDOWN - GLOWING BOXES */
+        .countdown {
             display: flex;
-            justify-content: center;
             gap: 2rem;
+            justify-content: center;
             margin: 3rem 0;
             flex-wrap: wrap;
         }
-        
+
         .countdown-box {
-            background: rgba(26, 26, 26, 0.8);
+            background: rgba(10, 10, 10, 0.7);
             border: 2px solid var(--emerald);
-            border-radius: 10px;
-            padding: 1.5rem;
-            min-width: 120px;
-            box-shadow: 0 0 20px rgba(58, 125, 68, 0.5);
-            transition: transform 0.3s ease;
+            border-radius: 15px;
+            padding: 2rem;
+            min-width: 150px;
+            box-shadow: var(--shadow-green);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
         }
-        
+
         .countdown-box:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 30px rgba(58, 125, 68, 0.8);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 0 50px rgba(58, 125, 68, 0.9);
         }
-        
+
+        .countdown-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent,
+                transparent,
+                rgba(255, 215, 0, 0.1)
+            );
+            transform: rotate(30deg);
+            transition: all 0.6s ease;
+        }
+
+        .countdown-box:hover::before {
+            transform: rotate(30deg) translate(30%, 30%);
+        }
+
         .countdown-value {
-            font-size: 3.5rem;
-            font-weight: 700;
+            font-size: 4.5rem;
+            font-weight: 800;
             color: var(--gold);
             margin: 0;
             line-height: 1;
-        }
-        
-        .countdown-label {
-            font-size: 1.2rem;
-            color: var(--white);
-            margin: 0.5rem 0 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .quote-container {
-            margin: 4rem auto;
-            max-width: 800px;
-            padding: 2rem;
-            border-left: 4px solid var(--emerald);
-            background: rgba(26, 26, 26, 0.6);
-            position: relative;
-        }
-        
-        .quote {
-            font-style: italic;
-            font-size: 1.5rem;
-            line-height: 1.6;
-            color: var(--white);
-            margin: 0;
-        }
-        
-        .quote::before,
-        .quote::after {
-            content: '"';
-            color: var(--gold);
-            font-size: 2rem;
-        }
-        
-        .character {
-            font-weight: 600;
-            color: var(--gold);
-            margin-top: 1rem;
-            display: block;
-            font-style: normal;
-        }
-        
-        .bubble {
-            position: absolute;
-            background: var(--purple);
-            border-radius: 50%;
-            opacity: 0.2;
-            z-index: -1;
-        }
-        
-        .bubble-1 {
-            width: 200px;
-            height: 200px;
-            top: -50px;
-            left: -50px;
-        }
-        
-        .bubble-2 {
-            width: 150px;
-            height: 150px;
-            bottom: -30px;
-            right: -30px;
-        }
-        
-        .info-section {
-            margin: 5rem 0;
-            text-align: left;
-            background: rgba(26, 26, 26, 0.8);
-            padding: 2rem;
-            border-radius: 10px;
-            border-top: 3px solid var(--purple);
-            border-bottom: 3px solid var(--emerald);
-        }
-        
-        .info-section h3 {
-            font-family: 'Playfair Display', serif;
-            color: var(--gold);
-            font-size: 2rem;
-            margin-top: 0;
-        }
-        
-        .info-section p {
-            line-height: 1.8;
-            font-size: 1.1rem;
-        }
-        
-        .quote-container p {
-            font-size: 1.3rem;
-        }
-        
-        .quote-container a {
-            color: var(--gold);
-            text-decoration: underline;
-        }
-        
-        footer {
-            margin-top: 4rem;
-            padding: 2rem;
-            border-top: 1px solid var(--emerald);
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
 
-        footer a {
+        .countdown-label {
+            font-size: 1.3rem;
+            color: var(--white);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* CHARACTER 3D CARDS */
+        .characters {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 6rem 0;
+            flex-wrap: wrap;
+        }
+
+        .character-card {
+            width: 300px;
+            height: 450px;
+            perspective: 1000px;
+        }
+
+        .character-inner {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .character-card:hover .character-inner {
+            transform: rotateY(180deg);
+        }
+
+        .character-front, .character-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .character-front {
+            background-size: cover;
+            background-position: center;
+        }
+
+        .character-back {
+            background: rgba(10, 10, 10, 0.9);
+            transform: rotateY(180deg);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 2px solid;
+        }
+
+        .elphaba .character-front {
+            background-image: url('https://www.broadwayworld.com/phoenix/article/BWW-Review-WICKED-at-ASU-Gammage-20191030');
+        }
+
+        .elphaba .character-back {
+            border-color: var(--emerald);
+        }
+
+        .glinda .character-front {
+            background-image: url('https://www.broadwayworld.com/phoenix/article/BWW-Review-WICKED-at-ASU-Gammage-20191030');
+        }
+
+        .glinda .character-back {
+            border-color: var(--pink);
+        }
+
+        .character-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .elphaba .character-name {
             color: var(--emerald);
+        }
+
+        .glinda .character-name {
+            color: var(--pink);
+        }
+
+        .character-desc {
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* SOUNDTRACK PLAYER */
+        .soundtrack {
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 15px;
+            padding: 3rem;
+            margin: 6rem 0;
+            border: 2px solid var(--purple);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .player {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .album-art {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            background-size: cover;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+        }
+
+        .player-controls {
+            flex-grow: 1;
+        }
+
+        .song-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+        }
+
+        .artist {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--emerald), var(--gold));
+            width: 30%;
+            border-radius: 3px;
+        }
+
+        .time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            color: var(--gold);
+            transform: scale(1.2);
+        }
+
+        .play-btn {
+            background: var(--emerald);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(58, 125, 68, 0.5);
+        }
+
+        .play-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        /* SOCIAL MEDIA WIDGET */
+        .social-widget {
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 6rem 0;
+            border: 2px solid var(--gold);
+        }
+
+        .tweet {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tweet:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .tweet-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--purple);
+            flex-shrink: 0;
+        }
+
+        .tweet-content {
+            flex-grow: 1;
+        }
+
+        .tweet-user {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .tweet-text {
+            line-height: 1.5;
+        }
+
+        .tweet-time {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 0.5rem;
+        }
+
+        /* PRE-ORDER CTA */
+        .preorder {
+            text-align: center;
+            margin: 6rem 0;
+        }
+
+        .preorder-btn {
+            background: linear-gradient(45deg, var(--emerald), var(--purple));
+            color: white;
+            border: none;
+            padding: 1.5rem 3rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 25px rgba(58, 125, 68, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preorder-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(58, 125, 68, 0.8);
+        }
+
+        .preorder-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent,
+                transparent,
+                transparent,
+                rgba(255, 255, 255, 0.1)
+            );
+            transform: rotate(30deg);
+            transition: all 0.6s ease;
+        }
+
+        .preorder-btn:hover::before {
+            transform: rotate(30deg) translate(20%, 20%);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 6rem;
+            border-top: 1px solid rgba(58, 125, 68, 0.3);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--white);
             text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* PARTICLE EFFECTS */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: -1;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1200px) {
+            .title { font-size: 5rem; }
+        }
+
+        @media (max-width: 992px) {
+            .title { font-size: 4rem; }
+            .countdown-box { min-width: 120px; padding: 1.5rem; }
+            .countdown-value { font-size: 3.5rem; }
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            h2 {
-                font-size: 1.5rem;
-            }
-            
-            .countdown-box {
-                min-width: 80px;
-                padding: 1rem;
-            }
-            
-            .countdown-value {
-                font-size: 2rem;
-            }
-            
-            .countdown-label {
-                font-size: 0.8rem;
-            }
-            
-            .quote {
-                font-size: 1.2rem;
-            }
+            .title { font-size: 3rem; }
+            .subtitle { font-size: 1.3rem; }
+            .countdown { gap: 1rem; }
+            .countdown-box { min-width: 100px; padding: 1rem; }
+            .countdown-value { font-size: 2.5rem; }
+            .countdown-label { font-size: 1rem; }
+            .characters { flex-direction: column; align-items: center; }
+            .player { flex-direction: column; }
+            .album-art { margin-bottom: 1.5rem; }
+        }
+
+        @media (max-width: 576px) {
+            .title { font-size: 2.5rem; }
+            .countdown-box { min-width: 80px; padding: 0.8rem; }
+            .countdown-value { font-size: 2rem; }
+            .countdown-label { font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
+    <!-- DYNAMIC TIME BACKGROUND -->
+    <div class="time-of-day" id="timeOfDay"></div>
+
+    <!-- VIDEO BACKGROUND -->
+    <video autoplay muted loop class="video-bg">
+        <source src="https://www.youtube.com/embed/vt98AlBDI9Y?autoplay=1&mute=1&loop=1&playlist=vt98AlBDI9Y" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <!-- CUSTOM CURSOR TRAIL -->
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <!-- MAIN CONTENT -->
     <div class="container">
-        <header>
-            <h1>Wicked, For Good</h1>
-            <h2>The Countdown Begins</h2>
-        </header>
-        
-        <div class="countdown-container">
-            <div class="countdown-box">
-                <div class="countdown-value" id="days">00</div>
-                <div class="countdown-label">Days</div>
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <h1 class="title">WICKED FOR GOOD</h1>
+            <p class="subtitle">The Definitive Countdown to November 21, 2025</p>
+            
+            <div class="countdown">
+                <div class="countdown-box">
+                    <div class="countdown-value" id="days">00</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="hours">00</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="minutes">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="seconds">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
             </div>
-            <div class="countdown-box">
-                <div class="countdown-value" id="hours">00</div>
-                <div class="countdown-label">Hours</div>
+        </section>
+
+        <!-- CHARACTERS SECTION -->
+        <section>
+            <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem; color: var(--gold);">The Witches of Oz</h2>
+            <div class="characters">
+                <div class="character-card elphaba">
+                    <div class="character-inner">
+                        <div class="character-front"></div>
+                        <div class="character-back">
+                            <h3 class="character-name">Elphaba</h3>
+                            <p class="character-desc">The misunderstood Wicked Witch of the West, whose emerald skin and powerful abilities set her apart in a world that fears difference.</p>
+                            <button class="preorder-btn" style="padding: 0.5rem 1.5rem; font-size: 1rem;">Learn More</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="character-card glinda">
+                    <div class="character-inner">
+                        <div class="character-front"></div>
+                        <div class="character-back">
+                            <h3 class="character-name">Glinda</h3>
+                            <p class="character-desc">The beautiful and ambitious Good Witch, whose journey from shallow popularity to true wisdom forms the heart of the story.</p>
+                            <button class="preorder-btn" style="padding: 0.5rem 1.5rem; font-size: 1rem;">Learn More</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="countdown-box">
-                <div class="countdown-value" id="minutes">00</div>
-                <div class="countdown-label">Minutes</div>
+        </section>
+
+        <!-- SOUNDTRACK PLAYER -->
+        <section class="soundtrack">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2.5rem; color: var(--gold);">Featured Songs</h2>
+            <div class="player">
+                <div class="album-art" style="background-image: url('https://m.media-amazon.com/images/I/81XHYLtqVBL._SL1500_.jpg')"></div>
+                <div class="player-controls">
+                    <h3 class="song-title">Defying Gravity (2025 Version)</h3>
+                    <p class="artist">Cynthia Erivo</p>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="time">
+                        <span>1:24</span>
+                        <span>3:42</span>
+                    </div>
+                    <div class="controls">
+                        <button class="control-btn"><i class="fas fa-step-backward"></i></button>
+                        <button class="control-btn play-btn"><i class="fas fa-play"></i></button>
+                        <button class="control-btn"><i class="fas fa-step-forward"></i></button>
+                        <button class="control-btn"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                </div>
             </div>
-            <div class="countdown-box">
-                <div class="countdown-value" id="seconds">00</div>
-                <div class="countdown-label">Seconds</div>
+        </section>
+
+        <!-- SOCIAL WIDGET -->
+        <section class="social-widget">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2.5rem; color: var(--gold);">#WickedForGood</h2>
+            <div class="tweet">
+                <div class="tweet-avatar"></div>
+                <div class="tweet-content">
+                    <div class="tweet-user">Wicked Fan @OzLover123</div>
+                    <div class="tweet-text">Just saw the new trailer! Cynthia Erivo as Elphaba is PERFECTION. November can't come soon enough! #WickedForGood</div>
+                    <div class="tweet-time">2 hours ago</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="quote-container">
-            <div class="bubble bubble-1"></div>
-            <div class="bubble bubble-2"></div>
-            <p class="quote">Are people born wicked? Or do they have wickedness thrust upon them?</p>
-            <span class="character">— Elphaba, Wicked</span>
-        </div>
-        
-        <div class="info-section">
-            <h3>About Wicked, For Good</h3>
-            <p>Mark your calendars for November 21, 2025, when "Wicked, For Good" will be released at midnight (local time). This highly anticipated new chapter in the Wicked saga promises to delve deeper into the complex relationship between Elphaba and Glinda, exploring themes of friendship, prejudice, and the nature of good and evil.</p>
-            <p>The original musical "Wicked" reimagined the Land of Oz, telling the story of two young women - one born with emerald-green skin who is smart, fiery and misunderstood, the other blonde, ambitious and exceptionally popular. How these two unlikely friends end up as the Wicked Witch of the West and Glinda the Good Witch makes for the most complete and satisfying musical in decades.</p>
-            <p>For more information about the release, visit <a href="https://wickedthemusical.com" target="_blank">Wicked's official website</a>.</p>
-        </div>
-        
-        <footer>
-            <p>Countdown to "Wicked, For Good" release on November 21, 2025 at 12:00 AM (Local Time)</p>
-            <p>This is an unofficial fan site. Wicked and all related elements are trademarks of their respective owners.</p>
-        </footer>
+            <div class="tweet">
+                <div class="tweet-avatar"></div>
+                <div class="tweet-content">
+                    <div class="tweet-user">Broadway News @TheGreatWhiteWay</div>
+                    <div class="tweet-text">"Wicked For Good" has already broken pre-sale records. Are we looking at the biggest musical event of the decade? #WickedForGood</div>
+                    <div class="tweet-time">5 hours ago</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRE-ORDER CTA -->
+        <section class="preorder">
+            <h2 style="font-size: 2.5rem; margin-bottom: 2rem; color: var(--gold);">Be the First to Experience It</h2>
+            <button class="preorder-btn" id="preorderBtn">GET TICKET ALERTS</button>
+        </section>
     </div>
-    
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="#">Official Site</a>
+            <a href="#">Cast</a>
+            <a href="#">Trailers</a>
+            <a href="#">Merch</a>
+            <a href="#">Press</a>
+        </div>
+        <p class="copyright">© 2025 Wicked For Good Countdown | Unofficial Fan Site</p>
+    </footer>
+
+    <!-- CONFETTI EFFECT (Hidden) -->
+    <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; display: none;"></canvas>
+
+    <!-- SCRIPTS -->
     <script>
-        // Set the date we're counting down to
+        // ===== DYNAMIC TIME BACKGROUND =====
+        function updateTimeOfDay() {
+            const now = new Date();
+            const hours = now.getHours();
+            const timeOfDay = document.getElementById('timeOfDay');
+            
+            if (hours >= 6 && hours < 12) {
+                // Morning
+                timeOfDay.style.setProperty('--sky-top', '#87CEEB');
+                timeOfDay.style.setProperty('--sky-middle', '#E0F7FA');
+                timeOfDay.style.setProperty('--sky-bottom', '#FFD54F');
+            } else if (hours >= 12 && hours < 18) {
+                // Afternoon
+                timeOfDay.style.setProperty('--sky-top', '#1E88E5');
+                timeOfDay.style.setProperty('--sky-middle', '#64B5F6');
+                timeOfDay.style.setProperty('--sky-bottom', '#BBDEFB');
+            } else if (hours >= 18 && hours < 21) {
+                // Evening
+                timeOfDay.style.setProperty('--sky-top', '#FF7043');
+                timeOfDay.style.setProperty('--sky-middle', '#FFAB91');
+                timeOfDay.style.setProperty('--sky-bottom', '#5D4037');
+            } else {
+                // Night
+                timeOfDay.style.setProperty('--sky-top', '#0A2463');
+                timeOfDay.style.setProperty('--sky-middle', '#3E92CC');
+                timeOfDay.style.setProperty('--sky-bottom', '#1A1A1A');
+            }
+        }
+        updateTimeOfDay();
+        setInterval(updateTimeOfDay, 60000);
+
+        // ===== COUNTDOWN TIMER =====
         const releaseDate = new Date("November 21, 2025 00:00:00").getTime();
         
-        // Update the countdown every 1 second
-        const countdown = setInterval(function() {
+        function updateCountdown() {
             const now = new Date().getTime();
             const distance = releaseDate - now;
             
@@ -294,62 +729,179 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             
-            document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
-            document.getElementById("hours").innerHTML = Math.floor(hours).toString().padStart(2, '0');
-            document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
-            document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+            document.getElementById("days").textContent = days.toString().padStart(2, '0');
+            document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
             
             if (distance < 0) {
-                clearInterval(countdown);
-                document.getElementById("countdown").innerHTML = "Wicked, For Good is now released!";
-            }
-        }, 1000);
-        
-        // Create floating bubbles for decoration
-        function createBubbles() {
-            const colors = ['#3a7d44', '#6a0dad', '#ffd700', '#ffffff'];
-            const container = document.querySelector('.container');
-            
-            for (let i = 0; i < 15; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                
-                const size = Math.random() * 50 + 20;
-                const posX = Math.random() * 100;
-                const posY = Math.random() * 100;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const opacity = Math.random() * 0.3 + 0.1;
-                const animationDuration = Math.random() * 20 + 10;
-                const delay = Math.random() * 10;
-                
-                bubble.style.width = `${size}px`;
-                bubble.style.height = `${size}px`;
-                bubble.style.left = `${posX}%`;
-                bubble.style.top = `${posY}%`;
-                bubble.style.background = color;
-                bubble.style.opacity = opacity;
-                bubble.style.animation = `float ${animationDuration}s ease-in-out ${delay}s infinite`;
-                
-                container.appendChild(bubble);
+                clearInterval(countdownTimer);
+                document.querySelectorAll(".countdown-value").forEach(el => el.textContent = "00");
+                document.querySelectorAll(".countdown-label").forEach(el => el.textContent = "IT'S HERE!");
             }
         }
+        updateCountdown();
+        const countdownTimer = setInterval(updateCountdown, 1000);
+
+        // ===== CUSTOM CURSOR TRAIL =====
+        const cursorTrail = document.getElementById('cursorTrail');
+        let trailElements = [];
         
-        // Add animation for bubbles
-        const style = document.createElement('style');
-        style.innerHTML = `@keyframes float {
-            0% {
-                transform: translateY(0) translateX(0);
+        document.addEventListener('mousemove', (e) => {
+            cursorTrail.style.left = e.pageX + 'px';
+            cursorTrail.style.top = e.pageY + 'px';
+            
+            // Create trailing elements
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = e.pageX + 'px';
+            trail.style.top = e.pageY + 'px';
+            trail.style.opacity = '0.5';
+            trail.style.transform = 'scale(1)';
+            document.body.appendChild(trail);
+            
+            trailElements.push(trail);
+            
+            // Remove old trails
+            if (trailElements.length > 10) {
+                const oldTrail = trailElements.shift();
+                oldTrail.style.transition = 'all 0.5s ease';
+                oldTrail.style.opacity = '0';
+                oldTrail.style.transform = 'scale(0.1)';
+                setTimeout(() => oldTrail.remove(), 500);
             }
-            50% {
-                transform: translateY(-100px) translateX(50px);
+        });
+
+        // ===== PARTICLE EFFECT ON CLICK =====
+        document.addEventListener('click', (e) => {
+            for (let i = 0; i < 30; i++) {
+                createParticle(e.clientX, e.clientY);
             }
-            100% {
-                transform: translateY(0) translateX(0);
-            }
-        }`;
-        document.head.appendChild(style);
+        });
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 10 + 5;
+            const color = `hsl(${Math.random() * 60 + 100}, 100%, 50%)`;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.background = color;
+            particle.style.borderRadius = '50%';
+            particle.style.position = 'fixed';
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            particle.style.pointerEvents = 'none';
+            
+            const duration = Math.random() * 3 + 2;
+            particle.style.animation = `floatParticle ${duration}s linear forwards`;
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, duration * 1000);
+        }
+
+        // ===== PRE-ORDER BUTTON CONFETTI =====
+        const preorderBtn = document.getElementById('preorderBtn');
+        const confettiCanvas = document.getElementById('confetti-canvas');
         
-        window.onload = createBubbles;
+        preorderBtn.addEventListener('click', () => {
+            // Show confetti
+            confettiCanvas.style.display = 'block';
+            launchConfetti();
+            
+            // Change button text
+            preorderBtn.innerHTML = '<i class="fas fa-check"></i> THANK YOU!';
+            preorderBtn.style.background = 'linear-gradient(45deg, var(--purple), var(--emerald))';
+            
+            // Hide confetti after 3 seconds
+            setTimeout(() => {
+                confettiCanvas.style.display = 'none';
+            }, 3000);
+        });
+
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const particles = [];
+            const colors = ['#3a7d44', '#ffd700', '#6a0dad', '#ffffff'];
+            
+            function createParticle() {
+                return {
+                    x: Math.random() * canvas.width,
+                    y: -20,
+                    size: Math.random() * 10 + 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedX: Math.random() * 6 - 3,
+                    speedY: Math.random() * 10 + 5,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 10 - 5
+                };
+            }
+            
+            for (let i = 0; i < 150; i++) {
+                particles.push(createParticle());
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach((particle, index) => {
+                    ctx.save();
+                    ctx.translate(particle.x, particle.y);
+                    ctx.rotate(particle.rotation * Math.PI / 180);
+                    
+                    ctx.fillStyle = particle.color;
+                    ctx.fillRect(-particle.size / 2, -particle.size / 2, particle.size, particle.size);
+                    
+                    ctx.restore();
+                    
+                    particle.x += particle.speedX;
+                    particle.y += particle.speedY;
+                    particle.rotation += particle.rotationSpeed;
+                    
+                    if (particle.y > canvas.height) {
+                        particles[index] = createParticle();
+                    }
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        // ===== SCROLL ANIMATIONS =====
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.countdown-box, .character-card, .soundtrack, .social-widget');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Set initial state
+        document.querySelectorAll('.countdown-box, .character-card, .soundtrack, .social-widget').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px)';
+            el.style.transition = 'all 0.8s ease';
+        });
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
     </script>
 </body>
 </html>
